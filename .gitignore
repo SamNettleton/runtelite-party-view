@@ -1,24 +1,27 @@
+# Production
+node_modules
+dist
+dist-ssr
+*.tsbuildinfo
+
 # Logs
 logs
 *.log
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Environment / Secrets
+.env
+.env.local
+.env.*.local
 
-# Editor directories and files
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Editor Settings
 .vscode/*
+!.vscode/settings.json
 !.vscode/extensions.json
 .idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+*.swp
+*.swo
