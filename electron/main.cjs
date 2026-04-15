@@ -8,6 +8,7 @@ function createMainWindow() {
     minWidth: 320,
     minHeight: 625,
     autoHideMenuBar: true,
+    icon: path.join(__dirname, 'build/icon.png'),
     webPreferences: {
       preload: join(__dirname, 'preload.cjs'),
       nodeIntegration: false,
