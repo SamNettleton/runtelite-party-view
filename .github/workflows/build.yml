@@ -37,5 +37,5 @@ jobs:
       - name: Build/Release Electron App
         uses: samuelmeuli/action-electron-builder@v1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.ELECTRON_RELEASE_TOKEN }}
           release: true
