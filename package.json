@@ -6,7 +6,7 @@
   "author": "Sam Nettleton",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/samnettleton/runelite-party-view.git"
+    "url": "https://github.com/samnettleton/runelite-party-view.git"
   },
   "type": "module",
   "main": "electron/main.cjs",
@@ -56,6 +56,13 @@
   },
   "build": {
     "appId": "com.runelite.partyview",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "samnettleton",
+        "repo": "runelite-party-view"
+      }
+    ],
     "productName": "RuneLite Party View",
     "files": [
       "dist/**",
