@@ -6,7 +6,7 @@
   "author": "Sam Nettleton",
   "repository": {
     "type": "git",
-    "url": "https://github.com/samnettleton/runelite-party-view.git"
+    "url": "https://github.com/samnettleton/runelite-party-view"
   },
   "type": "module",
   "main": "electron/main.cjs",
