@@ -1,7 +1,9 @@
 {
   "name": "runelite-party-view",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "A live party view for RuneLite",
+  "author": "Sam Nettleton",
   "repository": {
     "type": "git",
     "url": "https://github.com/samnettleton/runelite-party-view.git"

@@ -37,4 +37,4 @@ jobs:
         uses: samuelmeuli/action-electron-builder@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          draft: true
+          args: '--config.publish.provider=github --publish always'
