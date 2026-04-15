@@ -97,13 +97,13 @@
       "createDesktopShortcut": true
     },
     "linux": {
+      "icon": "build/icons",
       "target": [
         "AppImage",
         "deb"
       ],
       "maintainer": "Sam Nettleton <nettleton.sam@gmail.com>",
-      "category": "Utility",
-      "icon": "build/icon.png"
+      "category": "Utility"
     }
   }
 }

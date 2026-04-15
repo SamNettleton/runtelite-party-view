@@ -8,7 +8,6 @@ function createMainWindow() {
     minWidth: 320,
     minHeight: 625,
     autoHideMenuBar: true,
-    // Ensure this path is correct relative to where main.cjs lives
     icon: path.join(__dirname, '../build/icon.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
