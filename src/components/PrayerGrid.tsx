@@ -170,17 +170,11 @@ export const PrayerGrid: React.FC<{ ep?: number }> = ({ ep = 0 }) => {
               key={prayer.name}
               style={{
                 ...styles.slot,
-                backgroundColor: isActive ? 'rgba(204, 173, 128, 1)' : 'transparent',
+                backgroundColor: isActive ? 'rgba(204, 173, 128, 0.8)' : 'transparent',
+                border: isActive ? '1px solid rgba(255, 255, 255, 0.2)' : 'none',
               }}
             >
-              <img
-                src={prayer.icon}
-                style={{
-                  ...styles.icon,
-                }}
-                alt={prayer.name}
-                title={prayer.name}
-              />
+              <img src={prayer.icon} style={styles.icon} alt={prayer.name} title={prayer.name} />
             </div>
           );
         })}
@@ -195,18 +189,23 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: '4px',
     border: '2px solid #2a241c',
     boxSizing: 'border-box',
-    width: '243px',
-    height: '365px',
+    width: '215px',
+    height: '344px',
     display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: '10px 4px',
+    // Vertical Math: (344 - 4 (border) - 248 (grid)) / 2 = 46px
+    paddingTop: '46px',
+    paddingBottom: '46px',
+    // Horizontal Math: (215 - 4 (border) - 206 (grid)) / 2 = 2.5px
+    paddingLeft: '2.5px',
+    paddingRight: '2.5px',
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(5, 44px)',
-    gridTemplateRows: 'repeat(6, 40px)',
-    gap: '2px',
+    gridTemplateColumns: 'repeat(5, 38px)',
+    gridTemplateRows: 'repeat(6, 38px)',
+    gap: '4px', // Standardized gap for prayer tabs
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -216,13 +215,13 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: '50%',
+    borderRadius: '4px', // OSRS prayer active state is usually a rounded square, not a circle
     position: 'relative',
-    transition: 'all 0.1s ease',
+    transition: 'background-color 0.1s ease',
   },
   icon: {
-    width: '32px',
-    height: '32px',
+    width: '34px', // Slightly larger for better readability
+    height: '34px',
     imageRendering: 'pixelated',
     objectFit: 'contain',
     display: 'block',

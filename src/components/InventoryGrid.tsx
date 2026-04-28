@@ -35,8 +35,8 @@ export const InventoryGrid: React.FC<{ items?: InventoryItem[] }> = ({ items }) 
 const styles: Record<string, React.CSSProperties> = {
   inventoryGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(4, 52px)',
-    gridTemplateRows: 'repeat(7, 45px)',
+    gridTemplateColumns: 'repeat(4, 45px)',
+    gridTemplateRows: 'repeat(7, 42px)',
     gap: '5px',
     backgroundColor: '#3e3529',
     padding: '8px',
@@ -45,9 +45,8 @@ const styles: Record<string, React.CSSProperties> = {
     width: 'fit-content',
   },
   slot: {
-    width: '52px',
-    height: '45px',
-    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    width: '45px',
+    height: '42px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -55,15 +54,14 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: '2px',
   },
   itemImg: {
-    maxWidth: '40px',
-    maxHeight: '40px',
-    filter: 'drop-shadow(0px 2px 2px rgba(0,0,0,0.5))',
+    maxWidth: '45px',
+    maxHeight: '45px',
   },
   qty: {
     position: 'absolute',
     top: '2px',
     left: '2px',
-    fontSize: '12px',
+    fontSize: '10px',
     fontWeight: 'bold',
     textShadow: '1px 1px 0 #000',
     zIndex: 1,

@@ -40,7 +40,7 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({ memberId, player, onHide
     <div style={styles.playerCard} data-member-id={memberId}>
       <div style={styles.cardHeader}>
         <div style={styles.headerFlex}>
-          <h3 style={{ color: nameColor, margin: 0 }}>
+          <h3 style={{ color: nameColor, margin: 0, fontSize: '0.8rem' }}>
             {player.member.name || 'Unknown Player'} (level-{player.combatLevel})
           </h3>
           <button onClick={onHide} style={styles.hideButton} title="Hide Player">

@@ -47,13 +47,15 @@ const styles: Record<string, React.CSSProperties> = {
     backgroundColor: '#3e3529',
     borderRadius: '4px',
     border: '2px solid #2a241c',
-    boxSizing: 'border-box',
-    width: '243px',
-    height: '365px',
-    paddingLeft: '36.5px',
-    paddingRight: '36.5px',
-    paddingTop: '58px',
-    paddingBottom: '58px',
+    boxSizing: 'border-box', // Crucial to include border/padding in width
+    width: '215px',
+    height: '344px',
+    // Vertical Math: (344 - 4 (border) - 245 (rows+gaps)) / 2 = 47.5
+    paddingTop: '47.5px',
+    paddingBottom: '47.5px',
+    // Horizontal Math: (215 - 4 (border) - 166 (cols+gaps)) / 2 = 22.5
+    paddingLeft: '22.5px',
+    paddingRight: '22.5px',
   },
   slot: {
     width: '52px',
@@ -79,9 +81,10 @@ const styles: Record<string, React.CSSProperties> = {
     position: 'absolute',
     top: '2px',
     left: '2px',
-    fontSize: '12px',
+    fontSize: '10px', // Dropped to 10px to match InventoryGrid
     fontWeight: 'bold',
     textShadow: '1px 1px 0 #000',
     zIndex: 1,
+    pointerEvents: 'none',
   },
 };

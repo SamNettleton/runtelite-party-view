@@ -52,9 +52,9 @@ export const SkillsGrid: React.FC<{ stats?: PlayerStats }> = ({ stats }) => {
                   e.currentTarget.style.display = 'none';
                 }}
               />
-              <div style={styles.values}>
-                <span style={{ color: '#ffff66', fontWeight: 'bold' }}>{current}</span>
-                <span style={styles.base}>/{base}</span>
+              <div style={styles.statBox}>
+                <span style={styles.currentText}>{current}</span>
+                <span style={styles.baseText}>{base}</span>
               </div>
             </div>
           );
@@ -66,46 +66,65 @@ export const SkillsGrid: React.FC<{ stats?: PlayerStats }> = ({ stats }) => {
 
 const styles: Record<string, React.CSSProperties> = {
   container: {
-    width: '243px',
-    height: '365px',
-    backgroundColor: '#4a4a4a',
+    backgroundColor: '#3e3529',
     borderRadius: '4px',
-    border: '2px solid #3a3a3a',
+    border: '2px solid #2a241c',
     boxSizing: 'border-box',
-    padding: '6px',
+    width: '215px',
+    height: '344px',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    paddingTop: '18px',
+    paddingBottom: '18px',
+    paddingLeft: '8.5px',
+    paddingRight: '8.5px',
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(3, 73px)',
-    gridTemplateRows: 'repeat(8, 40px)',
+    gridTemplateColumns: 'repeat(3, 62px)',
+    gridTemplateRows: 'repeat(8, 35px)',
     gap: '4px',
   },
   item: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
-    gap: '6px',
-    background: 'rgba(0, 0, 0, 0.25)',
-    borderRadius: '2px',
     padding: '0 4px',
-    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    borderRadius: '2px',
+    gap: '6px',
+    height: '35px',
   },
   skillIcon: {
-    width: '22px',
-    height: '22px',
+    width: '18px',
+    height: '18px',
     objectFit: 'contain',
   },
-  values: {
+  statBox: {
     display: 'flex',
-    gap: '1px',
-    alignItems: 'baseline',
-    fontSize: '1rem',
+    flexDirection: 'column',
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    position: 'relative',
   },
-  base: {
-    color: 'rgba(255,255,255,0.7)',
-    fontSize: '0.75rem',
+  currentText: {
+    color: '#ffff66',
+    fontWeight: 'normal',
+    fontSize: '11px',
+    alignSelf: 'flex-start',
+    lineHeight: '1',
+    textShadow: '1px 1px 0 #000',
+    marginTop: '2px',
+  },
+  baseText: {
+    color: '#ffff66',
+    fontWeight: 'normal',
+    fontSize: '11px',
+    alignSelf: 'flex-end',
+    lineHeight: '1',
+    textShadow: '1px 1px 0 #000',
+    marginBottom: '2px',
+    marginRight: '2px',
   },
 };

@@ -13,62 +13,73 @@ export function useRuneLiteParty(partyIdStr: string | null) {
   const [connected, setConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const socketARef = useRef<WebSocket | null>(null);
-  const socketBRef = useRef<WebSocket | null>(null);
+  const socketRef = useRef<WebSocket | null>(null);
+  const memberIdRef = useRef<number>(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
 
-  const errorARef = useRef<string | null>(null);
-  const errorBRef = useRef<string | null>(null);
+  const isComponentMounted = useRef(true);
+  const socketVersion = useRef(0);
 
-  // Two separate IDs to bypass the 1008 "Member Resumed" error
-  const memberIdARef = useRef<number>(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
-  const memberIdBRef = useRef<number>(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
+  const createSocket = async (partyId: string, version: number) => {
+    if (!isComponentMounted.current || version !== socketVersion.current) return;
 
-  const createSocket = async (label: 'A' | 'B', partyId: string) => {
     try {
       const sessionUuid = crypto.randomUUID();
-      const currentMemberId = label === 'A' ? memberIdARef.current : memberIdBRef.current;
-
       const ws = new WebSocket(`wss://api.runelite.net/ws2?sessionId=${sessionUuid}`);
       ws.binaryType = 'arraybuffer';
 
       ws.onopen = () => {
-        console.log(`[Socket ${label}] ✅ Connected as ID: ${currentMemberId}`);
-        if (label === 'A') errorARef.current = null;
-        else errorBRef.current = null;
+        if (version !== socketVersion.current) {
+          ws.close();
+          return;
+        }
 
-        setError(null);
+        console.log(`[Socket v${version}] ✅ Connected. Handshaking...`);
         setConnected(true);
-
-        sendHandshake(ws, partyId, currentMemberId, `Web Observer ${label}`);
+        setError(null);
+        sendHandshake(ws, partyId, memberIdRef.current, 'Web Observer');
       };
 
       ws.onmessage = (event) => {
-        if (!(event.data instanceof ArrayBuffer)) return;
+        if (version !== socketVersion.current || !(event.data instanceof ArrayBuffer)) return;
         handleProtoMessage(event.data);
       };
 
-      ws.onerror = () => {
-        const errMsg = `Socket ${label} failed.`;
-        if (label === 'A') errorARef.current = errMsg;
-        else errorBRef.current = errMsg;
+      ws.onclose = (event) => {
+        if (isComponentMounted.current && version === socketVersion.current) {
+          setConnected(false);
 
-        if (errorARef.current && errorBRef.current) {
-          setError('All relay connections failed.');
+          // If kicked for expiry (1008), refresh the ID to ensure a clean session
+          if (event.code === 1008) {
+            console.log(`[Socket v${version}] Session expired. Refreshing Member ID.`);
+            memberIdRef.current = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+          }
+
+          console.log(`[Socket v${version}] Closed (${event.code}). Reconnecting in 3s...`);
+
+          // We trigger a new connection by incrementing the version
+          setTimeout(() => {
+            if (isComponentMounted.current && partyIdStr) {
+              initConnection(partyId);
+            }
+          }, 3000);
         }
       };
 
-      ws.onclose = (event) => {
-        console.log(`[Socket ${label}] 🔌 Closed (Code: ${event.code}). Reconnecting...`);
-        setTimeout(() => {
-          if (partyIdStr) createSocket(label, partyId);
-        }, 3000); // 3s buffer to prevent spamming the relay
-      };
-
-      if (label === 'A') socketARef.current = ws;
-      else socketBRef.current = ws;
+      socketRef.current = ws;
     } catch (e: any) {
       setError(`System Error: ${e.message}`);
     }
+  };
+
+  const initConnection = (partyId: string) => {
+    // Kill any existing socket listeners before moving to a new version
+    if (socketRef.current) {
+      socketRef.current.onclose = null;
+      socketRef.current.close();
+      socketRef.current = null;
+    }
+    socketVersion.current += 1;
+    createSocket(partyId, socketVersion.current);
   };
 
   const handleProtoMessage = (data: ArrayBuffer) => {
@@ -96,27 +107,19 @@ export function useRuneLiteParty(partyIdStr: string | null) {
   };
 
   useEffect(() => {
+    isComponentMounted.current = true;
+
     if (!partyIdStr) {
       setConnected(false);
-      setError(null);
       setPlayers({});
       return;
     }
 
-    let isComponentMounted = true;
-    let shadowTimer: number;
-
     const init = async () => {
       try {
         const partyIdNumeric = await getPartyIdNumeric(partyIdStr);
-        if (!isComponentMounted) return;
-
-        createSocket('A', partyIdNumeric);
-
-        // 60-second offset ensures they never "die" at the same time
-        shadowTimer = window.setTimeout(() => {
-          if (isComponentMounted) createSocket('B', partyIdNumeric);
-        }, 60000);
+        if (!isComponentMounted.current) return;
+        initConnection(partyIdNumeric);
       } catch (e: any) {
         setError('Invalid Party ID.');
       }
@@ -125,23 +128,13 @@ export function useRuneLiteParty(partyIdStr: string | null) {
     init();
 
     return () => {
-      isComponentMounted = false;
-      clearTimeout(shadowTimer);
-      if (socketARef.current) socketARef.current.onclose = null;
-      if (socketBRef.current) socketBRef.current.onclose = null;
-      socketARef.current?.close();
-      socketBRef.current?.close();
+      isComponentMounted.current = false;
+      if (socketRef.current) {
+        socketRef.current.onclose = null;
+        socketRef.current.close();
+      }
     };
   }, [partyIdStr]);
-
-  useEffect(() => {
-    const checkInterval = setInterval(() => {
-      const isAOpen = socketARef.current?.readyState === WebSocket.OPEN;
-      const isBOpen = socketBRef.current?.readyState === WebSocket.OPEN;
-      setConnected(isAOpen || isBOpen);
-    }, 1000);
-    return () => clearInterval(checkInterval);
-  }, []);
 
   return {
     players,
@@ -166,13 +159,22 @@ const sendHandshake = (ws: WebSocket, partyId: string, memberId: number, name: s
   const encoder = new TextEncoder();
 
   ws.send(party.C2S.encode(party.C2S.create({ join: { partyId: pId, memberId: mId } })).finish());
-  ws.send(
-    party.C2S.encode(
-      party.C2S.create({
-        data: { memberId: mId, type: 'UserSync', data: encoder.encode(JSON.stringify({ name })) },
-      })
-    ).finish()
-  );
+
+  // // This triggers the other clients to broadcast their data,
+  // // but avoids providing the 'name' or 'world' keys that trigger the overhead name flicker.
+  // const syncData = {};
+
+  // ws.send(
+  //   party.C2S.encode(
+  //     party.C2S.create({
+  //       data: {
+  //         memberId: mId,
+  //         type: 'UserSync',
+  //         data: encoder.encode(JSON.stringify(syncData)),
+  //       },
+  //     })
+  //   ).finish()
+  // );
 };
 
 function createEmptyPlayer(id: string): PlayerState {
