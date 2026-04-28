@@ -2,7 +2,7 @@
 
 RuneLite Party View is a standalone Electron application designed to mirror and enhance the RuneLite Party Hub experience. It provides a flexible window to monitor your party's health, prayer, inventory, and equipment without needing to keep the RuneLite side-panel open or sacrifice game screen real estate.
 
-![App Screenshot](https://imgur.com/HZzHPw3)
+![App Screenshot](https://i.imgur.com/HZzHPw3.png)
 
 ## 📥 Download
 
