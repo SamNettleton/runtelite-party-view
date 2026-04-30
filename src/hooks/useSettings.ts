@@ -27,7 +27,7 @@ export const useSettings = () => {
 
   const updatePreset = (index: number, value: string) => {
     const newPresets = [...settings.presets];
-    newPresets[index] = value.trim();
+    newPresets[index] = value;
     setSettings({ ...settings, presets: newPresets });
   };
 
