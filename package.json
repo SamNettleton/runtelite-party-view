@@ -1,7 +1,7 @@
 {
   "name": "runelite-party-view",
   "private": true,
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A live party view for RuneLite",
   "author": "Sam Nettleton",
   "repository": {
