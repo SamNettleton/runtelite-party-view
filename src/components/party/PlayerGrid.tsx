@@ -20,10 +20,18 @@ import { PlayerState } from '@/types';
 interface PlayerGridProps {
   players: Record<string, PlayerState>;
   hiddenIds: Set<string>;
+  multiTabMode: boolean;
+  timerFormat: 'ticks' | 'mss';
   onHidePlayer: (id: string) => void;
 }
 
-export const PlayerGrid: React.FC<PlayerGridProps> = ({ players, hiddenIds, onHidePlayer }) => {
+export const PlayerGrid: React.FC<PlayerGridProps> = ({
+  players,
+  hiddenIds,
+  multiTabMode,
+  timerFormat,
+  onHidePlayer,
+}) => {
   const [playerOrder, setPlayerOrder] = useState<string[]>([]);
 
   useEffect(() => {
@@ -66,6 +74,8 @@ export const PlayerGrid: React.FC<PlayerGridProps> = ({ players, hiddenIds, onHi
               key={memberId}
               memberId={memberId}
               player={players[memberId]}
+              multiTabMode={multiTabMode}
+              timerFormat={timerFormat}
               onHide={() => onHidePlayer(memberId)}
             />
           ))}

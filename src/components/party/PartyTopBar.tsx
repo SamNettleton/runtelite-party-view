@@ -1,33 +1,75 @@
+import SettingsIcon from '@mui/icons-material/Settings';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { Tooltip } from '@mui/material';
+import { ConnectionStatus } from '@/types';
+
 interface PartyTopBarProps {
-  connected: boolean;
-  partyId: string;
+  status: ConnectionStatus;
+  partyId: string | null;
   onDisconnect: () => void;
+  onOpenSettings: () => void;
 }
 
 export const PartyTopBar: React.FC<PartyTopBarProps> = ({
-  connected,
+  status,
   partyId,
   onDisconnect,
+  onOpenSettings,
 }) => {
+  const getStatusConfig = () => {
+    switch (status) {
+      case 'connected':
+        return { label: 'Connected', color: '#00e66b' }; // Theme green
+      case 'reconnecting':
+        return { label: 'Reconnecting...', color: '#0b90f5' }; // Blue waiting
+      case 'connecting':
+        return { label: 'Connecting...', color: '#94a3b8' }; // Gray
+      default:
+        return { label: 'Disconnected', color: '#ef4444' }; // Red
+    }
+  };
+
+  const config = getStatusConfig();
+
   return (
     <div style={styles.topBar}>
       <div style={styles.statusGroup}>
-        <span
-          style={{
-            ...styles.statusBadge,
-            ...(connected ? styles.connected : styles.disconnected),
-          }}
-        >
-          {connected ? 'Connected' : 'Connecting...'}
-        </span>
-        <span style={styles.partyInfo}>
-          Party: <strong style={{ marginLeft: '6px' }}>{partyId}</strong>
-        </span>
+        {partyId ? (
+          <>
+            <span
+              style={{
+                ...styles.statusBadge,
+                backgroundColor: `${config.color}20`,
+                color: config.color,
+                border: `1px solid ${config.color}40`,
+              }}
+            >
+              {config.label}
+            </span>
+            <span style={styles.partyInfo}>
+              Party: <strong style={{ marginLeft: '6px' }}>{partyId}</strong>
+            </span>
+          </>
+        ) : (
+          <span style={styles.brandText}>RuneLite Party Viewer</span>
+        )}
       </div>
 
-      <button onClick={onDisconnect} style={styles.disconnectBtn}>
-        Disconnect
-      </button>
+      <div style={styles.buttonGroup}>
+        {partyId && (
+          <Tooltip title="Leave Party">
+            <button onClick={onDisconnect} style={styles.disconnectIconBtn}>
+              <LogoutIcon style={{ fontSize: '24px' }} />
+            </button>
+          </Tooltip>
+        )}
+
+        <Tooltip title="Settings">
+          <button onClick={onOpenSettings} style={styles.settingsBtn}>
+            <SettingsIcon style={{ fontSize: '24px' }} />
+          </button>
+        </Tooltip>
+      </div>
     </div>
   );
 };
@@ -38,11 +80,13 @@ const styles: Record<string, React.CSSProperties> = {
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: '1rem',
+    width: '100%',
+    boxSizing: 'border-box',
   },
   statusGroup: {
     display: 'flex',
     alignItems: 'center',
-    gap: '1rem',
+    gap: '12px',
   },
   statusBadge: {
     padding: '0.25rem 0.75rem',
@@ -62,10 +106,42 @@ const styles: Record<string, React.CSSProperties> = {
     color: '#ef4444',
   },
   partyInfo: {
-    color: 'var(--text-muted)',
+    color: '#94a3b8',
+    fontSize: '0.9rem',
+  },
+  brandText: {
+    color: '#00e66b',
+    fontSize: '0.9rem',
+    fontWeight: 'bold',
+  },
+  buttonGroup: {
     display: 'flex',
     alignItems: 'center',
-    lineHeight: '1',
+    gap: '12px',
+  },
+  settingsBtn: {
+    background: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    color: '#94a3b8',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '4px',
+    opacity: 0.8,
+    transition: 'all 0.2s',
+  },
+  disconnectIconBtn: {
+    background: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    color: '#ef4444',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '4px',
+    opacity: 0.8,
+    transition: 'all 0.2s',
   },
   disconnectBtn: {
     padding: '0.5rem 1rem',

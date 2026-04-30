@@ -1,7 +1,7 @@
 {
   "name": "runelite-party-view",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A live party view for RuneLite",
   "author": "Sam Nettleton",
   "repository": {
@@ -27,6 +27,10 @@
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^9.0.0",
+    "@mui/material": "^9.0.0",
     "protobufjs": "^8.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

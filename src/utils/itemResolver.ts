@@ -12,7 +12,6 @@ export const initItemDatabase = async () => {
 
     itemDatabase = await response.json();
     isLoaded = true;
-    console.log(`Global item database loaded: ${Object.keys(itemDatabase).length} items.`);
   } catch (error) {
     console.error('Error loading item database:', error);
   }

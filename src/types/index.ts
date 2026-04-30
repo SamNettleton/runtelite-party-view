@@ -19,11 +19,11 @@ export interface SkillValue {
 }
 
 export interface PlayerStats {
-  // Common trackable headers
   hitpoints?: SkillValue;
   prayer?: SkillValue;
   runEnergy?: number;
   spec?: number;
+  overloadSippedAt?: number; // Timestamp of when overload was sipped, if applicable
 
   [key: string]: SkillValue | number | undefined;
 }
@@ -38,3 +38,5 @@ export interface PlayerState {
   [key: string]: any;
   prayerMask?: number;
 }
+
+export type ConnectionStatus = 'idle' | 'connecting' | 'connected' | 'reconnecting';

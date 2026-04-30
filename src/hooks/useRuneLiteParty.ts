@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { party } from '@/hooks/party_pb';
-import { PlayerState } from '@/types';
+import { PlayerState, ConnectionStatus } from '@/types';
 import Long from 'long';
 import * as $protobuf from 'protobufjs/minimal';
 import { updatePlayerFromData } from './partyReducer';
@@ -10,7 +10,7 @@ $protobuf.configure();
 
 export function useRuneLiteParty(partyIdStr: string | null) {
   const [players, setPlayers] = useState<Record<string, PlayerState>>({});
-  const [connected, setConnected] = useState(false);
+  const [status, setStatus] = useState<ConnectionStatus>('idle');
   const [error, setError] = useState<string | null>(null);
 
   const socketRef = useRef<WebSocket | null>(null);
@@ -40,8 +40,7 @@ export function useRuneLiteParty(partyIdStr: string | null) {
           return;
         }
 
-        console.log(`[Socket v${version}] ✅ Connected. Handshaking...`);
-        setConnected(true);
+        setStatus('connected');
         setError(null);
         sendHandshake(ws, partyId, memberIdRef.current);
       };
@@ -53,7 +52,7 @@ export function useRuneLiteParty(partyIdStr: string | null) {
 
       ws.onclose = (event) => {
         if (isComponentMounted.current && version === socketVersion.current) {
-          setConnected(false);
+          setStatus('reconnecting');
           scheduleReconnect(event.code, partyId);
         }
       };
@@ -88,6 +87,7 @@ export function useRuneLiteParty(partyIdStr: string | null) {
       socketRef.current.close();
       socketRef.current = null;
     }
+    setStatus((prev) => (prev === 'reconnecting' ? 'reconnecting' : 'connecting'));
     socketVersion.current += 1;
     createSocket(partyId, socketVersion.current);
   };
@@ -120,7 +120,7 @@ export function useRuneLiteParty(partyIdStr: string | null) {
     isComponentMounted.current = true;
 
     if (!partyIdStr) {
-      setConnected(false);
+      setStatus('idle');
       setPlayers({});
       return;
     }
@@ -148,7 +148,7 @@ export function useRuneLiteParty(partyIdStr: string | null) {
 
   return {
     players,
-    connected,
+    status,
     error,
   };
 }

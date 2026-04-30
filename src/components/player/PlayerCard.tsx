@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { PlayerState } from '@/types';
 import { InventoryGrid } from '@/components/player/InventoryGrid';
 import { EquipmentGrid } from '@/components/player/EquipmentGrid';
@@ -11,6 +11,8 @@ import { PrayerGrid } from '@/components/player/PrayerGrid';
 interface PlayerCardProps {
   memberId: string;
   player: PlayerState;
+  multiTabMode: boolean;
+  timerFormat: 'ticks' | 'mss';
   onHide: () => void;
   dndRef?: (element: HTMLElement | null) => void;
   dndStyle?: React.CSSProperties;
@@ -22,21 +24,38 @@ type GridView = 'inventory' | 'equipment' | 'skills' | 'prayer';
 export const PlayerCard: React.FC<PlayerCardProps> = ({
   memberId,
   player,
+  multiTabMode,
+  timerFormat,
   onHide,
   dndRef,
   dndStyle,
   dragHandleProps,
 }) => {
+  if (!player) return null;
+
   const [activeViews, setActiveViews] = useState<GridView[]>(['inventory']);
+
+  const multiTabRef = useRef(multiTabMode);
+
+  useEffect(() => {
+    multiTabRef.current = multiTabMode;
+  }, [multiTabMode]);
+
   const nameColor = player.member.color ? player.member.color.substring(0, 7) : '#fff';
 
   const toggleView = (view: GridView) => {
     setActiveViews((prev) => {
-      if (prev.includes(view)) {
-        if (prev.length === 1) return prev;
-        return prev.filter((v) => v !== view);
+      if (multiTabMode) {
+        if (prev.includes(view)) {
+          if (prev.length === 1) return prev;
+          return prev.filter((v) => v !== view);
+        }
+        return [...prev, view];
       }
-      return [...prev, view];
+
+      if (prev.length === 1 && prev[0] === view) return prev;
+
+      return [view];
     });
   };
 
@@ -64,7 +83,6 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({
       <div style={styles.cardHeader}>
         <div style={styles.headerFlex}>
           <div style={styles.dragHandleArea} {...dragHandleProps}>
-            {/* Fixed-color drag icon that spans the height of the name/level block */}
             <div style={styles.dragIcon}>⠿</div>
 
             <div style={styles.nameContainer}>
@@ -101,7 +119,7 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({
       </div>
 
       <div style={styles.statsWrapper}>
-        <StatBars stats={player.stats} />
+        <StatBars stats={player.stats} timerFormat={timerFormat} />
       </div>
 
       <div style={styles.buttonGroup}>
@@ -149,7 +167,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   headerFlex: {
     display: 'flex',
-    alignItems: 'center', // Center the button vertically relative to the name block
+    alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
     padding: '0 8px',

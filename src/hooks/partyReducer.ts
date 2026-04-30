@@ -48,7 +48,6 @@ export function updatePlayerFromData(existing: PlayerState, type: string, data: 
   }
 
   if (type === 'PartyBatchedChange') {
-    console.log('Batched update received:', data);
     // Stats/Misc
     if (Array.isArray(data.m)) {
       data.m.forEach((u: any) => {
@@ -98,6 +97,16 @@ export function updatePlayerFromData(existing: PlayerState, type: string, data: 
     // data.ep is the number representing active prayers
     if (data.ep !== undefined) {
       next.prayerMask = data.ep;
+    }
+  }
+
+  if (type === 'PartyRaidsPotsUpdate') {
+    if (data.pot === 'OVL') {
+      if (data.ticks === 500) {
+        stats.overloadSippedAt = Date.now();
+      }
+    } else if (data.pot === 'DEAD') {
+      stats.overloadSippedAt = undefined;
     }
   }
 
