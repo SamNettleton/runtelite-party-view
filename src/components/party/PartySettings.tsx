@@ -7,9 +7,11 @@ interface PartySettingsProps {
   presets: string[];
   timerFormat: 'ticks' | 'mss';
   multiTabMode: boolean;
+  showTarget: boolean;
   updatePreset: (index: number, value: string) => void;
   setTimerFormat: (format: 'ticks' | 'mss') => void;
   setMultiTabMode: (enabled: boolean) => void;
+  setShowTarget: (enabled: boolean) => void;
   onClose: () => void;
 }
 
@@ -17,9 +19,11 @@ export const PartySettings: React.FC<PartySettingsProps> = ({
   presets,
   timerFormat,
   multiTabMode,
+  showTarget,
   updatePreset,
   setTimerFormat,
   setMultiTabMode,
+  setShowTarget,
   onClose,
 }) => {
   return (
@@ -91,6 +95,42 @@ export const PartySettings: React.FC<PartySettingsProps> = ({
                   style={{
                     ...styles.sliderKnob,
                     transform: multiTabMode ? 'translateX(18px)' : 'translateX(0px)',
+                  }}
+                />
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <div style={styles.section}>
+          <div style={styles.switchRow}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <p style={styles.sectionTitleNoMargin}>Display Target</p>
+              <Tooltip
+                title="When ON, shows the last NPC or player each party member attacked on their card."
+                arrow
+                placement="top"
+              >
+                <InfoOutlinedIcon style={{ fontSize: '16px', color: '#94a3b8', cursor: 'help' }} />
+              </Tooltip>
+            </div>
+            <label style={styles.switch}>
+              <input
+                type="checkbox"
+                checked={showTarget}
+                onChange={(e) => setShowTarget(e.target.checked)}
+                style={styles.switchInput}
+              />
+              <span
+                style={{
+                  ...styles.slider,
+                  backgroundColor: showTarget ? '#00e66b' : '#333',
+                }}
+              >
+                <span
+                  style={{
+                    ...styles.sliderKnob,
+                    transform: showTarget ? 'translateX(18px)' : 'translateX(0px)',
                   }}
                 />
               </span>

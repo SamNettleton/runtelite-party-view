@@ -6,12 +6,14 @@ import { HiddenPlayersList } from '@/components/party/HiddenPlayersList';
 import { PlayerGrid } from '@/components/party/PlayerGrid';
 import { PartySettings } from '@/components/party/PartySettings';
 import { initItemDatabase } from '@/utils/itemResolver';
+import { initNpcDatabase } from '@/utils/npcResolver';
 import { useSettings } from './hooks/useSettings';
 import './index.css';
 
 function App() {
   useEffect(() => {
     initItemDatabase();
+    initNpcDatabase();
   }, []);
 
   const settings = useSettings();
@@ -82,6 +84,7 @@ function App() {
               hiddenIds={hiddenPlayers}
               multiTabMode={settings.multiTabMode}
               timerFormat={settings.timerFormat}
+              showTarget={settings.showTarget}
               onHidePlayer={toggleHidePlayer}
             />
           )}

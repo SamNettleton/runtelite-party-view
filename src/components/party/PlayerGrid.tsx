@@ -22,6 +22,7 @@ interface PlayerGridProps {
   hiddenIds: Set<string>;
   multiTabMode: boolean;
   timerFormat: 'ticks' | 'mss';
+  showTarget: boolean;
   onHidePlayer: (id: string) => void;
 }
 
@@ -30,6 +31,7 @@ export const PlayerGrid: React.FC<PlayerGridProps> = ({
   hiddenIds,
   multiTabMode,
   timerFormat,
+  showTarget,
   onHidePlayer,
 }) => {
   const [playerOrder, setPlayerOrder] = useState<string[]>([]);
@@ -76,6 +78,7 @@ export const PlayerGrid: React.FC<PlayerGridProps> = ({
               player={players[memberId]}
               multiTabMode={multiTabMode}
               timerFormat={timerFormat}
+              showTarget={showTarget}
               onHide={() => onHidePlayer(memberId)}
             />
           ))}

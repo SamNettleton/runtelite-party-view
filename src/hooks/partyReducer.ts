@@ -1,4 +1,4 @@
-import { PlayerState, PlayerStats, InventoryItem } from '@/types';
+import { PlayerState, PlayerStats, InventoryItem, LastAttackedTarget } from '@/types';
 
 const SKILL_NAMES = [
   'attack',
@@ -107,6 +107,21 @@ export function updatePlayerFromData(existing: PlayerState, type: string, data: 
       }
     } else if (data.pot === 'DEAD') {
       stats.overloadSippedAt = undefined;
+    }
+  }
+
+  if (type === 'PredictedHitPartyMessage') {
+    // The plugin serialises PredictedHit fields to camelCase JSON.
+    // npcId is -1 when the target is another player.
+    // playerCombatLevel is -1 when the target is an NPC.
+    const hit = data.predictedHit;
+    if (hit) {
+      const isPlayer: boolean = hit.opponentIsPlayer === true;
+      const lastAttackedTarget: LastAttackedTarget = {
+        npcId: isPlayer ? -1 : (hit.npcId ?? -1),
+        isPlayer,
+      };
+      next.lastAttackedTarget = lastAttackedTarget;
     }
   }
 

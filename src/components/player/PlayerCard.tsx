@@ -7,12 +7,14 @@ import { SkillsGrid } from '@/components/player/SkillsGrid';
 
 import wornEquipmentIcon from '@/assets/Worn_Equipment.png';
 import { PrayerGrid } from '@/components/player/PrayerGrid';
+import { getNpcName } from '@/utils/npcResolver';
 
 interface PlayerCardProps {
   memberId: string;
   player: PlayerState;
   multiTabMode: boolean;
   timerFormat: 'ticks' | 'mss';
+  showTarget: boolean;
   onHide: () => void;
   dndRef?: (element: HTMLElement | null) => void;
   dndStyle?: React.CSSProperties;
@@ -26,6 +28,7 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({
   player,
   multiTabMode,
   timerFormat,
+  showTarget,
   onHide,
   dndRef,
   dndStyle,
@@ -117,6 +120,17 @@ export const PlayerCard: React.FC<PlayerCardProps> = ({
           </button>
         </div>
       </div>
+
+      {showTarget && (
+        <div style={styles.targetRow}>
+          <span style={styles.targetLabel}>Target:</span>
+          <span style={styles.targetValue}>
+            {player.lastAttackedTarget && !player.lastAttackedTarget.isPlayer
+              ? getNpcName(player.lastAttackedTarget.npcId)
+              : '\u00a0'}
+          </span>
+        </div>
+      )}
 
       <div style={styles.statsWrapper}>
         <StatBars stats={player.stats} timerFormat={timerFormat} />
@@ -290,5 +304,27 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: '4px',
     border: '2px solid #3a3a3a',
     fontSize: '0.8rem',
+  },
+  targetRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '4px',
+    width: '100%',
+    boxSizing: 'border-box' as const,
+    padding: '0px 12px 8px 12px',
+  },
+  targetLabel: {
+    fontSize: '0.65rem',
+    color: '#64748b',
+    fontWeight: 'bold',
+    letterSpacing: '0.04rem',
+  },
+  targetValue: {
+    fontSize: '0.7rem',
+    color: '#cbd5e1',
+    maxWidth: '70%',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap' as const,
   },
 };
