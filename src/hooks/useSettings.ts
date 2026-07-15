@@ -8,6 +8,7 @@ export const useSettings = () => {
       presets: ['', '', '', '', ''],
       timerFormat: 'ticks',
       multiTabMode: true,
+      showTarget: false,
     };
 
     const saved = localStorage.getItem(SETTINGS_KEY);
@@ -36,5 +37,7 @@ export const useSettings = () => {
 
   const setMultiTabMode = (enabled: boolean) => setSettings({ ...settings, multiTabMode: enabled });
 
-  return { ...settings, updatePreset, setTimerFormat, setMultiTabMode };
+  const setShowTarget = (enabled: boolean) => setSettings({ ...settings, showTarget: enabled });
+
+  return { ...settings, updatePreset, setTimerFormat, setMultiTabMode, setShowTarget };
 };

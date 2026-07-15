@@ -9,6 +9,7 @@ interface SortablePlayerCardProps {
   player: PlayerState;
   multiTabMode: boolean;
   timerFormat: 'ticks' | 'mss';
+  showTarget: boolean;
   onHide: (id: string) => void;
 }
 
@@ -17,6 +18,7 @@ export const SortablePlayerCard: React.FC<SortablePlayerCardProps> = ({
   player,
   multiTabMode,
   timerFormat,
+  showTarget,
   onHide,
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -38,6 +40,7 @@ export const SortablePlayerCard: React.FC<SortablePlayerCardProps> = ({
         player={player}
         multiTabMode={multiTabMode}
         timerFormat={timerFormat}
+        showTarget={showTarget}
         onHide={() => onHide(memberId)}
         dragHandleProps={{ ...attributes, ...listeners }}
       />

@@ -154,3 +154,57 @@ describe('updatePlayerFromData – unknown type', () => {
     expect(result.inventory).toEqual(player.inventory);
   });
 });
+
+describe('updatePlayerFromData – PredictedHitPartyMessage', () => {
+  it('stores NPC target from predictedHit', () => {
+    const data = {
+      predictedHit: {
+        npcId: 8349,
+        opponentIsPlayer: false,
+        targetIndex: 7,
+        playerCombatLevel: -1,
+      },
+      color: { r: 255, g: 255, b: 255 },
+      world: 302,
+    };
+    const result = updatePlayerFromData(emptyPlayer(), 'PredictedHitPartyMessage', data);
+    expect(result.lastAttackedTarget).toEqual({
+      npcId: 8349,
+      isPlayer: false,
+    });
+  });
+
+  it('stores player target', () => {
+    const data = {
+      predictedHit: {
+        npcId: -1,
+        opponentIsPlayer: true,
+        targetIndex: 3,
+      },
+      color: { r: 0, g: 0, b: 0 },
+      world: 302,
+    };
+    const result = updatePlayerFromData(emptyPlayer(), 'PredictedHitPartyMessage', data);
+    expect(result.lastAttackedTarget).toEqual({
+      npcId: -1,
+      isPlayer: true,
+    });
+  });
+
+  it('does not set lastAttackedTarget when predictedHit is absent', () => {
+    const result = updatePlayerFromData(emptyPlayer(), 'PredictedHitPartyMessage', { color: {}, world: 302 });
+    expect(result.lastAttackedTarget).toBeUndefined();
+  });
+
+  it('preserves all other player state when updating lastAttackedTarget', () => {
+    let player = updatePlayerFromData(emptyPlayer(), 'PartyBatchedChange', {
+      m: [{ t: 'C', v: 126 }],
+    });
+    player = updatePlayerFromData(player, 'PredictedHitPartyMessage', {
+      predictedHit: { npcId: 9999, opponentIsPlayer: false, targetIndex: 0, playerCombatLevel: -1 },
+      world: 302,
+    });
+    expect(player.combatLevel).toBe(126);
+    expect(player.lastAttackedTarget?.npcId).toBe(9999);
+  });
+});

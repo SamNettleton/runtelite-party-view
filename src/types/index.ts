@@ -28,6 +28,17 @@ export interface PlayerStats {
   [key: string]: SkillValue | number | undefined;
 }
 
+/**
+ * Represents the last NPC (or player) that a party member attacked,
+ * sourced from the `PredictedHitPartyMessage` sent by the XP Drops plugin.
+ */
+export interface LastAttackedTarget {
+  /** NPC ID being attacked (-1 if the target is a player). */
+  npcId: number;
+  /** Whether the target is another player rather than an NPC. */
+  isPlayer: boolean;
+}
+
 export interface PlayerState {
   member: PartyMember;
   inventory?: InventoryItem[];
@@ -37,6 +48,8 @@ export interface PlayerState {
   combatLevel?: number;
   [key: string]: any;
   prayerMask?: number;
+  /** The last NPC or player this party member attacked (from PredictedHitPartyMessage). */
+  lastAttackedTarget?: LastAttackedTarget;
 }
 
 export type ConnectionStatus = 'idle' | 'connecting' | 'connected' | 'reconnecting';
